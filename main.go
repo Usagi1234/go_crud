@@ -1,30 +1,45 @@
 package main
 
 import (
-	"fmt"
-	"log"
-	"net/http"
+	"strconv"
+
+	"github.com/gofiber/fiber/v2"
 )
 
-func helloHandler(w http.ResponseWriter, r *http.Request) {
-  if r.URL.Path != "/hello" {
-    http.Error(w, "404 not found.", http.StatusNotFound)
-    return
-  }
-
-  if r.Method != "GET" {
-    http.Error(w, "Method is not supported.", http.StatusNotFound)
-    return
-  }
-
-  fmt.Fprintf(w, "Hello World!")
+// Book struct to hold book data
+type Book struct {
+	ID     int    `json:"id"`
+	Title  string `json:"title"`
+	Author string `json:"author"`
 }
 
-func main() {
-  http.HandleFunc("/hello", helloHandler)
+var books []Book // Slice to store books
 
-  fmt.Printf("Starting server at port 8080\n")
-  if err := http.ListenAndServe(":8080", nil); err != nil {
-    log.Fatal(err)
-  }
+func main() {
+	app := fiber.New()
+
+	books = append(books, Book{ID: 1, Title: "1984", Author: "George Orwell"})
+	books = append(books, Book{ID: 2, Title: "The Great Gatsby", Author: "F. Scott Fitzgerald"})
+
+	app.Get("/books", getBooks)
+	app.Get("/books/:id", getBook)
+
+	app.Listen(":8080")
+}
+
+func getBooks(c *fiber.Ctx) error {
+	return c.JSON(books)
+}
+
+func getBook(c *fiber.Ctx) error {
+	bookId, err := strconv.Atoi(c.Params("id"))
+	if err != nil {
+		return c.Status(fiber.StatusBadRequest).SendString(err.Error())
+	}
+	for _, book := range books {
+		if book.ID == bookId {
+			return c.JSON(book)
+		}
+	}
+	return c.Status(fiber.StatusNotFound).SendString("ไม่เจอจ้า")
 }
