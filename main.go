@@ -2,6 +2,8 @@ package main
 
 import (
 	"github.com/gofiber/fiber/v2"
+
+	"github.com/Usagi1234/go_crud/models"
 )
 
 // Book struct to hold book data
@@ -11,15 +13,9 @@ type Book struct {
 	Author string `json:"author"`
 }
 
-type todo struct {
-	ID        string `json:"id"`
-	Item      string `json:"item"`
-	Completed bool   `json:"completed"`
-}
-
 var books []Book // Slice to store books
 
-var todos = []todo{
+var todos = []models.Todo{
 	{ID: "1", Item: "Getting a space suit", Completed: false},
 	{ID: "2", Item: "Getting a spaceship", Completed: false},
 	{ID: "3", Item: "Going to Mars", Completed: false},

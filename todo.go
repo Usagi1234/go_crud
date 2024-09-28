@@ -4,6 +4,7 @@ import (
 	"errors"
 	"strconv"
 
+	"github.com/Usagi1234/go_crud/models"
 	"github.com/gofiber/fiber/v2"
 )
 
@@ -65,7 +66,7 @@ func createBook(c *fiber.Ctx) error {
 
 // addTodo
 func addTodo(c *fiber.Ctx) error {
-	newTodo := new(todo)
+	newTodo := new(models.Todo)
 	if err := c.BodyParser(newTodo); err != nil {
 		return c.Status(fiber.StatusBadRequest).SendString(err.Error())
 	}
@@ -99,7 +100,7 @@ func updateBook(c *fiber.Ctx) error {
 // updateTodo
 func updateTodo(c *fiber.Ctx) error {
 	id := c.Params("id")
-	todoUpdate := new(todo)
+	todoUpdate := new(models.Todo)
 	if err := c.BodyParser(todoUpdate); err != nil {
 		return c.Status(fiber.StatusBadRequest).SendString(err.Error())
 	}
@@ -137,5 +138,5 @@ func deleteTodo(c *fiber.Ctx) error {
 	}
 
 	todos = append(todos[:index], todos[index+1:]...)
-	return c.Status(fiber.StatusNotFound).SendString("Todo deleted")
+	return c.Status(fiber.StatusOK).SendString("Todo deleted")
 }
